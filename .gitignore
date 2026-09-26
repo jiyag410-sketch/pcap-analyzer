@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.pcap
+*.pcapng
+!samples/README.md
+reports/*.md
+reports/*.pdf
+!reports/.gitkeep
+.DS_Store
+.streamlit/

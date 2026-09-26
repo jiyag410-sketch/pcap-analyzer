@@ -1,0 +1,223 @@
+/* ============================================================
+   theme.css -- Enterprise SOC dashboard theme
+   Depends on CSS variables injected by design_system.css_variables_block()
+   Inspired by the visual language of Defender XDR / Falcon / Cortex —
+   dark surface, cyan-indigo accent gradient, glassmorphism cards.
+   ============================================================ */
+
+/* ---- Global app background & typography ---- */
+.stApp {
+    background: radial-gradient(circle at 15% 0%, #0d1320 0%, var(--bg-primary) 45%) fixed;
+    font-family: var(--font-family);
+    font-size: var(--size-body);
+    color: var(--text-primary);
+}
+
+section[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+    border-right: 1px solid var(--border-color);
+}
+
+h1, h2, h3, h4 {
+    font-family: var(--font-family);
+    color: var(--text-primary) !important;
+    letter-spacing: -0.015em;
+    font-weight: 650;
+}
+
+h3 { font-size: var(--size-h2); }
+
+p, span, label, .stMarkdown {
+    color: var(--text-secondary);
+}
+
+code, .stCode, pre {
+    font-family: var(--font-family-mono) !important;
+}
+
+/* Hide only the menu and footer */
+#MainMenu,
+footer {
+    visibility: hidden;
+    height: 0;
+}
+
+/* Keep the header so the sidebar toggle exists */
+header[data-testid="stHeader"] {
+    background: transparent !important;
+    border: none !important;
+}
+/* ---- Hero banner -- calm, editorial, single restrained accent ---- */
+.soc-hero {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 2.25rem 2.5rem;
+    margin-bottom: var(--gap-lg);
+    position: relative;
+    overflow: hidden;
+}
+
+.soc-hero::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--accent-gradient);
+}
+
+.soc-hero h1 {
+    color: var(--text-primary) !important;
+    font-size: var(--size-hero);
+    font-weight: var(--weight-hero);
+    letter-spacing: var(--letter-spacing-hero);
+    margin: 0;
+    line-height: 1.15;
+}
+
+.soc-hero p {
+    color: var(--text-secondary);
+    margin: 0.6rem 0 0 0;
+    font-size: 1.05rem;
+    max-width: 46rem;
+}
+
+/* ---- Metric cards -- spacious, calm, restrained accent on hover ---- */
+.soc-metric-card {
+    background: var(--bg-surface);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 1.5rem 1.6rem;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+    height: 100%;
+}
+
+.soc-metric-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(148, 163, 184, 0.28);
+}
+
+.soc-metric-label {
+    font-size: var(--size-small);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+}
+
+.soc-metric-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+}
+
+.soc-metric-icon {
+    font-size: 1.2rem;
+    margin-bottom: 0.6rem;
+    opacity: 0.75;
+}
+
+/* ---- Status chips ---- */
+.soc-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    border: 1px solid transparent;
+}
+
+.soc-chip-critical { background: rgba(244, 63, 94, 0.14); color: var(--severity-critical); border-color: rgba(244, 63, 94, 0.35); }
+.soc-chip-high     { background: rgba(251, 146, 60, 0.14); color: var(--severity-high); border-color: rgba(251, 146, 60, 0.35); }
+.soc-chip-medium   { background: rgba(250, 204, 21, 0.14); color: var(--severity-medium); border-color: rgba(250, 204, 21, 0.35); }
+.soc-chip-low      { background: rgba(56, 189, 248, 0.14); color: var(--severity-low); border-color: rgba(56, 189, 248, 0.35); }
+.soc-chip-ok       { background: rgba(52, 211, 153, 0.14); color: var(--severity-ok); border-color: rgba(52, 211, 153, 0.35); }
+
+/* ---- Section panels (wraps expanders / groups) ---- */
+.soc-panel {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 1.6rem 1.75rem;
+    margin-bottom: var(--gap-md);
+}
+
+/* ---- Streamlit component overrides ---- */
+div[data-testid="stMetric"] {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 0.9rem 1.1rem;
+}
+
+.stTabs [data-baseweb="tab-list"] {
+    gap: 0.4rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.stTabs [data-baseweb="tab"] {
+    background: transparent;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    color: var(--text-secondary);
+    padding: 0.6rem 1rem;
+}
+
+.stTabs [aria-selected="true"] {
+    color: var(--accent-solid) !important;
+    border-bottom: 2px solid var(--accent-solid);
+}
+
+div[data-testid="stExpander"] {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+}
+
+.stButton > button, .stDownloadButton > button {
+    background: var(--accent-solid);
+    color: #04141a;
+    border: none;
+    border-radius: 999px;
+    font-weight: 600;
+    padding: 0.55rem 1.3rem;
+    transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.stButton > button:hover, .stDownloadButton > button:hover {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+}
+
+div[data-testid="stFileUploaderDropzone"] {
+    background: var(--bg-surface);
+    border: 1.5px dashed var(--border-color);
+    border-radius: var(--radius-md);
+}
+
+div[data-testid="stFileUploaderDropzone"]:hover {
+    border-color: var(--accent-solid);
+}
+
+div[data-testid="stDataFrame"] {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+/* ---- Footer ---- */
+.soc-footer {
+    margin-top: 2.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border-color);
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    text-align: center;
+}

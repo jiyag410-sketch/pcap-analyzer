@@ -1,0 +1,16 @@
+[package]
+name = "pcap_rust_accel"
+version = "0.1.0"
+edition = "2021"
+description = "PyO3-accelerated hot paths for the PCAP Forensic Analyzer: Shannon entropy (DNS tunneling detection) and communication-graph edge aggregation."
+
+[lib]
+name = "pcap_rust_accel"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.20", features = ["extension-module"] }
+
+[profile.release]
+opt-level = 3
+lto = true
