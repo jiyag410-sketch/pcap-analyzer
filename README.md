@@ -1,68 +1,379 @@
-# 🌆 UrbanPulse Bengaluru
+# PCAP Forensic Analyzer
 
-**Satellite-based analysis of lake loss, urban heat, flood risk and groundwater across Bengaluru's 225 BBMP wards.**
-
-🔗 **Live dashboard:** _add your Streamlit link here_
-
-![Dashboard screenshot](images/dashboard.png)
+An interactive cybersecurity tool for automated analysis of **PCAP** and **PCAPNG** network captures. The project complements Wireshark by automating repetitive digital forensics and incident response (DFIR) tasks such as threat detection, IOC extraction, forensic reporting, and traffic visualization.
 
 ---
 
-## Why this project
+## Why this exists
 
-Bengaluru was once called the "city of lakes". In 2022 its tech corridors flooded, and in 2024 its borewells ran dry. UrbanPulse tests one idea with 25 years of satellite data: **losing lakes and green cover links the city's heat, flooding and water stress**, and it shows which wards need which fix.
+Wireshark is an industry-standard packet analyzer and excels at protocol-level inspection. However, forensic investigations often require additional manual effort to identify suspicious activity, extract Indicators of Compromise (IOCs), and prepare investigation reports.
 
-## Key findings
+This project focuses on **automating those investigation tasks**, enabling faster triage of packet captures while still allowing analysts to use Wireshark for detailed packet inspection when required.
 
-| Theme | Finding |
-|---|---|
-| 🏞️ Lost lakes | Lake extent fell **≈26%** (≈45.8 → 33.8 km²) between 1999–2003 and 2020–2024 |
-| 🌊 Flood risk | **60%** of lost-lake area lies in the top-20% flood-risk zone (3× chance); lost lakes sit ≈1.2 m above drainage vs ≈12.7 m city-wide |
-| 🌳 Restorable | Only **≈1%** of lost-lake area is built over, so most lost lakes can still be restored |
-| 🔥 Heat | Built-up areas are coolest-ranked by day but **warmest at night**, cooling ≈3 °C less overnight than open land |
-| 💧 Groundwater | No significant regional decline (2003–2025); end-of-monsoon change tracks rainfall (**r ≈ 0.68**) |
-| 🤖 ML | Random Forest predicts surface temperature with **R² ≈ 0.73** on spatially held-out areas; SHAP ranks bare/hard surfaces as the main heating factor |
-| 🏘️ Wards | The 45 most vulnerable wards house **≈17 lakh people**; each ward gets a recommended action |
+| Manual Wireshark Workflow | PCAP Forensic Analyzer |
+|---------------------------|------------------------|
+| Manual packet inspection | Automated traffic analysis dashboard |
+| Manual IOC extraction | One-click extraction of external IPs, domains and URLs |
+| Manual report writing | Automatic Markdown forensic report generation |
+| Manual threat hunting | Rule-based threat detection modules |
+| Limited visualization | Interactive charts, timeline and communication graph |
+| Requires display-filter expertise | Beginner-friendly dashboard interface |
 
-## Methods
+---
 
-1. **Urban heat.** Landsat 8/9 land surface temperature (2014 vs 2024), MODIS day/night comparison, and temperature by ESA WorldCover land class.
-2. **Lost lakes.** MNDWI water frequency over 5-year windows, which avoids drought-year bias, validated against JRC Global Surface Water.
-3. **Flood susceptibility.** Weighted index from MERIT Hydro HAND, slope, upstream area and built-up density.
-4. **Groundwater.** GLDAS CLSM (GRACE-assimilated) and GRACE/GRACE-FO, with a Mann-Kendall trend test and correlation with CHIRPS rainfall.
-5. **ML heat drivers.** Random Forest with spatial block cross-validation and SHAP explanations.
-6. **Ward vulnerability index.** Percentile-ranked heat, flood and lake-loss scores for 225 wards, with rule-based recommended actions.
+# Features
 
-## Tech stack
+### Packet Analysis
+- Upload and analyze **PCAP** and **PCAPNG** files
+- Automatic packet parsing
+- Packet statistics and protocol distribution
+- Source and destination IP analysis
+- Interactive packet viewer
 
-Google Earth Engine · geemap · GeoPandas · scikit-learn · SHAP · pymannkendall · Streamlit · Folium
+### Threat Detection
+The analyzer automatically detects common suspicious behaviors including:
 
-## Run locally
+- **Port Scan Detection**
+  - Identifies hosts attempting connections to many destination ports within a short time window.
+
+- **Beaconing Detection**
+  - Detects periodic communication patterns commonly associated with Command & Control (C2) traffic.
+
+- **DNS Tunneling Detection**
+  - Flags suspicious DNS traffic based on query frequency and entropy.
+
+- **Plaintext Credential Detection**
+  - Detects credentials transmitted over insecure protocols including HTTP, FTP and Telnet.
+
+---
+
+### IOC (Indicators of Compromise) Extraction
+
+Automatically extracts:
+
+- External IP addresses
+- Domains
+- URLs
+
+with downloadable CSV export.
+
+---
+
+### Evidence Integrity
+
+Generates cryptographic hashes for uploaded evidence:
+
+- MD5
+- SHA1
+- SHA256
+
+These hashes help verify the integrity of the original capture during forensic investigations.
+
+---
+
+### Interactive Dashboard
+
+The Streamlit dashboard includes:
+
+- 📊 Packet Statistics
+- 📈 Protocol Distribution Charts
+- 🌐 Network Communication Graph
+- 🕒 Traffic Timeline
+- 📡 Top Source IPs
+- 📡 Top Destination IPs
+- 🔍 Packet Viewer
+- 🚨 Threat Detection Results
+- 🛡 IOC Extraction
+- 📄 Investigation Report
+
+---
+
+### Report Generation
+
+Automatically generates a structured forensic report containing:
+
+- Capture Summary
+- Protocol Distribution
+- Threat Detection Results
+- IOC Summary
+- Alert Statistics
+
+Reports can be downloaded as Markdown for documentation or further conversion to PDF if required.
+
+---
+
+# Project Structure
+
+```
+pcap-analyzer/
+│
+├── app.py                    # Streamlit dashboard
+├── main.py                   # CLI interface
+├── config.py                 # Central configuration
+├── models.py                 # PacketRecord data model
+├── pcap_parser.py            # PCAP/PCAPNG parser using Scapy
+├── calculate_statistics.py   # Packet statistics
+├── communication_graph.py    # Network communication graph
+├── ioc_extractor.py          # IOC extraction (IPs, domains, URLs)
+├── password_detector.py      # Extended credential/secret detection
+├── credential_utils.py       # Basic-Auth, JWT and weak-password helpers
+├── hashing.py                # Evidence hashing (MD5, SHA1, SHA256)
+├── report_generator.py       # Markdown report generation
+├── pdf_report.py             # PDF forensic report generation
+├── report_integrity.py       # SHA-256 integrity sidecar for PDF reports
+├── hash_verifier.py          # CLI to verify a report against its hash
+├── performance.py            # Caching and profiling utilities
+├── accelerated.py            # Rust-accelerated hot paths (optional)
+├── rust_bridge.py            # Bridge to the Rust extension
+├── design_system.py          # UI design tokens
+├── ui_components.py          # Reusable Streamlit UI components
+├── ui_styles.py              # Alternate color palette
+├── theme_manager.py          # Light/Dark theme toggle
+│
+├── detectors/
+│   ├── port_scan.py
+│   ├── beaconing.py
+│   ├── dns_tunneling.py
+│   └── plaintext_creds.py
+│
+├── visualization/
+│   └── charts.py             # Plotly charts
+│
+├── mcp_server/               # MCP server exposing the analyzer as tools
+│   ├── server.py
+│   └── tools.py
+│
+├── rust/                     # Optional Rust acceleration (see RUST.md)
+│   ├── Cargo.toml
+│   └── src/lib.rs
+│
+├── assets/theme.css
+├── tests/
+│   ├── test_detectors.py
+│   └── test_accelerated.py
+├── samples/
+├── reports/
+├── screenshots/
+│
+├── ENHANCEMENTS.md           # Details of added features
+├── NOTES.md                  # MCP server setup notes
+├── RUST.md                   # Rust acceleration details
+├── requirements.txt
+├── LICENSE
+└── README.md
+```
+
+---
+
+# Installation
+
+Clone the repository
+
+```bash
+git clone https://github.com/jiyag410-sketch/pcap-analyzer.git
+
+cd pcap-analyzer
+```
+
+Create a virtual environment
+
+```bash
+python -m venv .venv
+```
+
+Activate it
+
+### Windows
+
+```bash
+.venv\Scripts\activate
+```
+
+### Linux/macOS
+
+```bash
+source .venv/bin/activate
+```
+
+Install dependencies
 
 ```bash
 pip install -r requirements.txt
+```
+
+---
+
+# Usage
+
+## Command Line Interface
+
+```bash
+python main.py samples/capture.pcap --report reports/report.md
+```
+
+---
+
+## Streamlit Dashboard
+
+```bash
 streamlit run app.py
 ```
 
-## Repository structure
+The application will open in your browser.
 
+Upload any supported **.pcap** or **.pcapng** file to begin analysis.
+
+---
+
+# Analysis Workflow
+
+1. Upload a PCAP/PCAPNG file.
+2. Parse network packets.
+3. Calculate packet statistics.
+4. Extract Indicators of Compromise.
+5. Execute threat detection modules.
+6. Visualize traffic patterns.
+7. Generate investigation report.
+8. Download forensic report.
+
+---
+
+# Threat Detection Modules
+
+| Detector | Description |
+|-----------|-------------|
+| Port Scan | Detects rapid connections to multiple destination ports |
+| Beaconing | Detects periodic communication indicating possible C2 traffic |
+| DNS Tunneling | Detects abnormal DNS behaviour |
+| Plaintext Credentials | Detects credentials transmitted without encryption |
+
+---
+
+# Dashboard Modules
+
+- Dashboard Overview
+- Packet Statistics
+- Protocol Distribution
+- Source IP Analysis
+- Destination IP Analysis
+- Threat Detection
+- IOC Extraction
+- Packet Viewer
+- Network Communication Graph
+- Timeline Visualization
+- Investigation Report
+
+---
+
+# Testing
+
+Run unit tests
+
+```bash
+pytest tests/ -v
 ```
-├── app.py                      # Streamlit dashboard
-├── urbanpulse_wards.geojson    # ward-level results (225 wards)
-├── requirements.txt
-├── notebooks/
-│   └── UrbanPulse_Bengaluru.ipynb   # full analysis
-└── images/                     # screenshots and maps
-```
 
-## Limitations
+Real-world captures can be obtained from
 
-- Land surface temperature is not air temperature.
-- Some "lost" lakes may be weed-covered rather than drained.
-- Satellite groundwater data is regional (≈27 km) and cannot resolve individual borewells.
-- Ward populations are census-based estimates.
-- Index weights are transparent assumptions, not calibrated against observed flood events.
+https://www.malware-traffic-analysis.net/
 
-## Data sources
+---
 
-Landsat 5/7/8/9 (USGS), MODIS MOD11A2 (NASA), ESA WorldCover, JRC Global Surface Water, MERIT Hydro, Copernicus DEM, GLDAS & GRACE (NASA), CHIRPS (UCSB), BBMP 2023 ward boundaries (OpenCity).
+# Screenshots
+
+Screenshots of:
+-Pcap Analyzer
+![Pcapforensicsanalyzer](screenshots/pcap_forensicanalyzer.png)
+
+-Password Credentials
+![password](screenshots/password.png)
+
+- Dashboard
+![Dashboard](screenshots/dashboard.png)
+
+-Evidence Integrity
+![Integrity](screenshots/integrity.png)
+
+-Packet Viewer
+![packet](screenshots/packet_viewer.png)
+
+- Statistics
+![statistics](screenshots/traffic_stats.png)
+
+- Threat Detection
+![threat](screenshots/threat_detection.png)
+
+- IOC Extraction
+![ioc](screenshots/ioc.png)
+
+- Network Graph
+![network](screenshots/network_graph.png)
+
+- Timeline
+![timeline](screenshots/network_timeline.png)
+
+- Investigation Report
+![report](screenshots/summary_report.png)
+
+-Pdf Generation
+![pdf_generation](screenshots/pdf_generation.png)
+
+
+---
+
+# Future Enhancements
+
+Potential improvements include:
+
+- Live packet capture support
+- Geo-IP visualization
+- VirusTotal integration
+- AbuseIPDB enrichment
+- Machine Learning based anomaly detection
+- Additional detectors
+  - ARP Spoofing
+  - DHCP Rogue Detection
+  - Data Exfiltration Detection
+
+---
+
+# Contributing
+
+Contributions are welcome.
+
+Possible contribution areas include:
+
+- New detection modules
+- Additional visualization dashboards
+- Performance optimization
+- Improved forensic reporting
+- Unit testing
+
+---
+
+# License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+# Author
+
+**Jiya Gupta**
+
+Bachelor of Technology (Computer Science & Engineering)- 4th year
+
+Birla Institute of Technology, Mesra, Ranchi
+
+
+---
+
+# Acknowledgements
+
+- Scapy
+- Streamlit
+- Plotly
+- NetworkX
+- Pandas
+- Wireshark
+- Malware Traffic Analysis
