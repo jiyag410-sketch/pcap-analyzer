@@ -1,4 +1,5 @@
 # PCAP Forensic Analyzer
+🔗 **Live demo:** https://pcap-forensic-analyzer.streamlit.app/
 
 An interactive cybersecurity tool for automated analysis of **PCAP** and **PCAPNG** network captures. The project complements Wireshark by automating repetitive digital forensics and incident response (DFIR) tasks such as threat detection, IOC extraction, forensic reporting, and traffic visualization.
 
